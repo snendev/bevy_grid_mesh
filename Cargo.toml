@@ -1,0 +1,20 @@
+[package]
+name = "bevy_grid_mesh"
+version = "0.1.0"
+license = "MIT OR Apache-2.0"
+edition = "2021"
+authors = ["Sean Sullivan <me@snen.dev>"]
+description = "An infinite 3D procedural (chunked) mesh builder for Bevy"
+repository = "https://github.com/snendev/bevy_grid_mesh"
+readme = "README.md"
+
+[dependencies]
+bevy = "0.12"
+derive_more = "0.99"
+itertools = "0.12"
+rand = "0.8"
+
+[dev-dependencies]
+bevy-inspector-egui = "*"
+noise = "*"
+once_cell = "*"
