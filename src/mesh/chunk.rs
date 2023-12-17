@@ -3,7 +3,7 @@ use bevy::{
     render::{mesh::Indices, render_resource::PrimitiveTopology},
 };
 
-use crate::{Chunk, ChunkMaterial, HeightMap, Vertex};
+use crate::{Chunk, ChunkMaterial, HeightMap, HeightMapFunc, Vertex};
 
 #[derive(Debug, Clone, Default)]
 #[derive(Component, Reflect)]
@@ -96,9 +96,9 @@ impl GridChunkMesh {
         (mesh, Vec3::new(translation_x, origin_y, translation_z))
     }
 
-    pub fn to_bundle(
+    pub fn to_bundle<F: HeightMapFunc>(
         self,
-        height_map: &HeightMap,
+        height_map: &HeightMap<F>,
         chunk_material: Option<&ChunkMaterial>,
         meshes: &mut Assets<Mesh>,
     ) -> impl Bundle {

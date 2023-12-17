@@ -4,20 +4,21 @@ use crate::{Chunk, Grid, GridChunkMesh, GridChunks, GridTracker, Vertex};
 
 mod systems;
 
-// TODO: use dyn, Resource was having trouble before
-pub type HeightMapFunc = fn(f32, f32) -> f32;
+pub trait HeightMapFunc: Fn(f32, f32) -> f32 + Clone + Send + Sync + 'static {}
 
-#[derive(Clone, Copy, Resource)]
-pub struct HeightMap(HeightMapFunc);
+impl<F: Fn(f32, f32) -> f32 + Clone + Send + Sync + 'static> HeightMapFunc for F {}
 
-impl HeightMap {
-    pub fn get_fn(&self) -> &HeightMapFunc {
+#[derive(Clone, Resource)]
+pub struct HeightMap<F: HeightMapFunc>(F);
+
+impl<F: HeightMapFunc> HeightMap<F> {
+    pub fn get_fn(&self) -> &F {
         &self.0
     }
 }
 
-impl From<HeightMapFunc> for HeightMap {
-    fn from(xz_to_y: HeightMapFunc) -> Self {
+impl<F: HeightMapFunc> From<F> for HeightMap<F> {
+    fn from(xz_to_y: F) -> Self {
         Self(xz_to_y)
     }
 }
@@ -38,15 +39,15 @@ impl ChunkMaterial {
     }
 }
 
-pub struct HeightMapPlugin {
-    height_map: HeightMap,
+pub struct HeightMapPlugin<F: HeightMapFunc> {
+    height_map: HeightMap<F>,
     material: StandardMaterial,
     tile_size: Vec2,
 }
 
-impl HeightMapPlugin {
+impl<F: HeightMapFunc> HeightMapPlugin<F> {
     pub fn new(
-        height_map: impl Into<HeightMap>,
+        height_map: impl Into<HeightMap<F>>,
         material: impl Into<StandardMaterial>,
         tile_size: Vec2,
     ) -> Self {
@@ -58,19 +59,19 @@ impl HeightMapPlugin {
     }
 }
 
-impl Plugin for HeightMapPlugin {
+impl<F: HeightMapFunc> Plugin for HeightMapPlugin<F> {
     fn build(&self, app: &mut App) {
         let mut materials = app.world.resource_mut::<Assets<StandardMaterial>>();
         let material_handle = materials.add(self.material.clone());
 
         app.insert_resource(ChunkMaterial::new(material_handle, self.tile_size))
-            .insert_resource(self.height_map)
+            .insert_resource(self.height_map.clone())
             .add_systems(
                 Update,
                 (
                     systems::update_grid,
                     systems::attach_terrain,
-                    systems::update_terrain_mesh,
+                    systems::update_terrain_mesh::<F>,
                 )
                     .chain(),
             );

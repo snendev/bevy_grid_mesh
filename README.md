@@ -22,8 +22,7 @@ fn main() {
         .add_plugins(
             HeightMapPlugin::new(
                 // the height_map which determines the appropriate y for each vertex
-                // (see TODOs)
-                my_height_map as fn(f32, f32) -> f32,
+                my_height_map,
                 // any impl Into<StandardMaterial>, the texture used to tile mesh chunks
                 Color::GRAY,
                 // the tile_size for the chunk texture
@@ -113,7 +112,6 @@ cargo run --example $EXAMPLE
 
 ## TODOS
 
-- Make it easier to provide the terrain function using `dyn` (or generics if I really have to)
 - Render larger, lower-resolution chunks at far distances to render more space while staying cheap
 - Render better normals
 - Rename the crate to something better

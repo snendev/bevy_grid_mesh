@@ -1,22 +1,18 @@
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::*;
 use noise::*;
-use once_cell::sync::*;
 
 use bevy_grid_mesh::*;
 
-static NOISE: Lazy<Fbm<Perlin>> = Lazy::new(|| Fbm::<Perlin>::new(0));
-
-fn noisy(x: f32, y: f32) -> f32 {
-    NOISE.get([x as f64, y as f64]) as f32 * 10.
-}
-
 fn main() {
+    let noise = Fbm::<Perlin>::new(0);
+    let noisy = move |x: f32, y: f32| noise.get([x as f64, y as f64]) as f32 * 10.;
+
     App::new()
         .add_plugins((
             DefaultPlugins,
             WorldInspectorPlugin::default(),
-            HeightMapPlugin::new(noisy as fn(f32, f32) -> f32, Color::GRAY, Vec2::ONE * 100.),
+            HeightMapPlugin::new(noisy, Color::GRAY, Vec2::ONE * 100.),
         ))
         .add_systems(Startup, spawn)
         .run();

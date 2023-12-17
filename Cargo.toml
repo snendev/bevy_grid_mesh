@@ -17,4 +17,3 @@ rand = "0.8"
 [dev-dependencies]
 bevy-inspector-egui = "*"
 noise = "*"
-once_cell = "*"

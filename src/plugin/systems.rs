@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 
-use crate::{Chunk, ChunkMaterial, Grid, GridChunkMesh, GridChunks, GridTracker, HeightMap};
+use crate::{
+    Chunk, ChunkMaterial, Grid, GridChunkMesh, GridChunks, GridTracker, HeightMap, HeightMapFunc,
+};
 
 pub(super) fn update_grid(
     mut grid_query: Query<&mut Grid>,
@@ -22,10 +24,10 @@ pub(super) fn attach_terrain(mut commands: Commands, query: Query<Entity, Added<
     }
 }
 
-pub(super) fn update_terrain_mesh(
+pub(super) fn update_terrain_mesh<F: HeightMapFunc>(
     mut commands: Commands,
     mut chunk_query: Query<(&Grid, &mut GridChunks)>,
-    height_map: Res<HeightMap>,
+    height_map: Res<HeightMap<F>>,
     chunk_material: Option<Res<ChunkMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
 ) {
