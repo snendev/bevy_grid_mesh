@@ -117,6 +117,7 @@ cargo run --example $EXAMPLE
 - Render larger, lower-resolution chunks at far distances to render more space while staying cheap
 - Render better normals
 - Rename the crate to something better
+- Trim dependencies
 
 ## History
 
