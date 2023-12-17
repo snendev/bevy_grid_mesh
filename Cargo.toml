@@ -12,7 +12,6 @@ readme = "README.md"
 bevy = "0.12"
 derive_more = "0.99"
 itertools = "0.12"
-rand = "0.8"
 
 [dev-dependencies]
 bevy-inspector-egui = "*"
