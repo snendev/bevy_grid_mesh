@@ -96,7 +96,7 @@ fn attach_chunk_colliders(
 }
 ```
 
-(Be sure to order the system so that physics is spawned alongside the mesh, to avoid
+(Be sure to order the system so that the mesh and physics components are added within the same frame and before physics runs, to avoid
 [1-frame delays](https://bevy-cheatbook.github.io/programming/system-order.html?highlight=delay#does-it-even-matter).)
 
 ## Examples
